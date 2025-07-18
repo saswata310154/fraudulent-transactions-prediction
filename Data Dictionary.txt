@@ -1,3 +1,4 @@
+csv file - https://drive.google.com/file/d/1oHfmd5Lw2_mENg0v_vVO4CIq-gVU988P/view?usp=drive_link
 step - maps a unit of time in the real world. In this case 1 step is 1 hour of time. Total steps 744 (30 days simulation).
 
 type - CASH-IN, CASH-OUT, DEBIT, PAYMENT and TRANSFER.
