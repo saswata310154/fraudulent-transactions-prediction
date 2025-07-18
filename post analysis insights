@@ -1,0 +1,82 @@
+
+## ✅ **1. Data Cleaning (Missing values, outliers, multi-collinearity)**
+
+* **Missing values**: Checked using `df.isnull().sum()`. No missing values were found in the dataset, so no imputation was necessary.
+* **Outliers**: Due to the highly skewed distribution of transaction amounts, we explored them using boxplots. However, since frauds often involve large transactions, we chose not to remove outliers to retain meaningful fraud signals.
+* **Multi-collinearity**: A correlation matrix revealed strong relationships between some balance columns (e.g., `oldbalanceOrg` and `newbalanceOrig`). However, as we used Random Forest (a tree-based model that handles collinearity well), we kept all features after checking that no pair had a perfect linear dependency.
+
+---
+
+## ✅ **2. Fraud Detection Model Description**
+
+* We used a **Random Forest Classifier** with `class_weight='balanced'` to handle class imbalance (frauds are rare).
+* The model was trained on features like transaction type, amount, and account balances.
+* Hyperparameters were kept default for simplicity; however, tuning can be done using `GridSearchCV` if needed.
+* We avoided SMOTE or oversampling to keep the model simple and compatible with systems lacking `imblearn`.
+
+---
+
+## ✅ **3. Feature Selection Process**
+
+* All features from the dataset (except `nameOrig`, `nameDest`, and `isFlaggedFraud`) were included after encoding the `type` column using `LabelEncoder`.
+* These features were chosen based on:
+
+  * **Business understanding** (balances and amounts are likely tied to fraud).
+  * **Data completeness** (no missing values).
+  * **Model compatibility** (Random Forests are robust to noisy features).
+* Feature importance analysis after training confirmed that key features were relevant (like `type`, `amount`, `oldbalanceOrg`).
+
+---
+
+## ✅ **4. Model Performance Evaluation**
+
+* **Confusion Matrix**: Evaluated true/false positives and negatives.
+* **Classification Report**: Included precision, recall, F1-score — crucial due to imbalance.
+* **ROC-AUC Score**: Reported using `roc_auc_score()` — this measures how well the model distinguishes between fraud and non-fraud.
+* **ROC Curve**: Visualized model's performance across thresholds.
+* **Feature Importance**: Used `model.feature_importances_` and plotted top predictors.
+
+---
+
+## ✅ **5. Key Factors Predicting Fraudulent Transactions**
+
+Top 3 predictors (based on feature importance):
+
+1. **Transaction type** (`type`): Most frauds were of type `TRANSFER` or `CASH_OUT`.
+2. **Transaction amount**: Large transactions are often associated with fraud.
+3. **Balance dynamics**: Changes between `oldbalanceOrg` and `newbalanceOrig` showed sudden drops, a sign of suspicious activity.
+
+---
+
+## ✅ **6. Do These Factors Make Sense?**
+
+Yes, they make logical and business sense:
+
+* Fraudsters commonly use `TRANSFER` or `CASH_OUT` operations to move/withdraw money rapidly.
+* High transaction amounts increase risk and hence are more likely to be fraudulent.
+* Sudden account balance drops with no corresponding recipient balance increase often signal fraud (e.g., fraudulent transfers to non-existent accounts).
+
+---
+
+## ✅ **7. Recommended Infrastructure-Level Prevention Measures**
+
+To reduce fraud risk, the company should:
+
+* **Implement real-time transaction monitoring** with machine learning alerts.
+* **Set transaction limits**, especially on `TRANSFER` or `CASH_OUT` operations.
+* **Deploy two-factor authentication** for high-risk actions.
+* **Monitor account behavior profiles** for anomalies (e.g., sudden large transfers).
+* **Maintain audit logs** and use anomaly detection systems for backend review.
+
+---
+
+## ✅ **8. How to Measure Effectiveness of Actions**
+
+To evaluate if prevention strategies are working:
+
+* **Compare fraud rates** before and after implementation.
+* **Track model metrics** like precision, recall, and false positives over time.
+* **Conduct A/B testing**: Apply new rules to a subset of users and compare fraud rates.
+* **User feedback**: Monitor complaints or reversal requests related to unauthorized transactions.
+* **Model retraining**: Periodically retrain the model to adapt to new fraud patterns.
+
