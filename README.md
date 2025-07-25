@@ -32,7 +32,7 @@ Python, Pandas, NumPy, Matplotlib, Seaborn, Scikit-learn, XGBoost, SMOTE
 
 ## 👤 Author
 **Saswata Sarkar**  
-_Data Science Intern, INSAID_
+
 
 ## 📜 License
 MIT License – for academic use only.
